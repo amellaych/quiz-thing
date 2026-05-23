@@ -45,8 +45,16 @@ export default function HostGamePage() {
           return;
         }
         setPin(resp.pin);
-        const url = `${window.location.origin}/join?pin=${resp.pin}`;
-        setJoinUrl(url);
+        // Prefer a server-configured PUBLIC_URL (so the host can run on
+        // localhost while sharing a tunnel URL with players). Fall back to the
+        // current origin (works when the host opens the app via the public URL
+        // directly, e.g. on a deployed site).
+        let base = window.location.origin;
+        try {
+          const cfg = await fetch("/api/config").then((r) => r.json());
+          if (cfg?.publicUrl) base = String(cfg.publicUrl).replace(/\/$/, "");
+        } catch {}
+        setJoinUrl(`${base}/join?pin=${resp.pin}`);
       } catch (e: any) {
         setError(e?.message || "Connection failed");
       }

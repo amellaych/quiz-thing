@@ -27,7 +27,26 @@ app.prepare().then(async () => {
   registerSocketHandlers(io);
 
   httpServer.listen(port, hostname, () => {
+    const os = require("os");
+    const nets = os.networkInterfaces();
+    const lanIps = [];
+    for (const name of Object.keys(nets)) {
+      for (const net of nets[name] || []) {
+        if (net.family === "IPv4" && !net.internal) lanIps.push(net.address);
+      }
+    }
     // eslint-disable-next-line no-console
     console.log(`> Quiz Thing ready on http://${hostname}:${port}`);
+    if (lanIps.length) {
+      // eslint-disable-next-line no-console
+      console.log(`> LAN access:  ${lanIps.map((ip) => `http://${ip}:${port}`).join("  ")}`);
+    }
+    if (process.env.PUBLIC_URL) {
+      // eslint-disable-next-line no-console
+      console.log(`> Public URL:  ${process.env.PUBLIC_URL}`);
+    } else {
+      // eslint-disable-next-line no-console
+      console.log(`> Tip: set PUBLIC_URL to your tunnel URL so players can join from anywhere.`);
+    }
   });
 });
