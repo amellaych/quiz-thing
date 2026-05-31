@@ -7,6 +7,7 @@ import type { GameSnapshot, PlayerAvatar } from "@/lib/types";
 import { Avatar } from "@/components/Avatar";
 import { Timer } from "@/components/Timer";
 import { AnswerTile } from "@/components/AnswerTile";
+import { Background } from "@/components/Background";
 
 interface StoredPlayer {
   pin: string;
@@ -62,23 +63,29 @@ export default function PlayPage() {
 
   if (hostLeft) {
     return (
-      <main className="min-h-screen grid place-items-center px-6">
-        <div className="card p-8 max-w-md text-center">
-          <div className="text-3xl mb-2">📴</div>
-          <p className="mb-4">The host left the game.</p>
-          <Link href="/" className="btn-primary">
-            Back home
-          </Link>
-        </div>
-      </main>
+      <>
+        <Background themeId="midnight" />
+        <main className="min-h-screen grid place-items-center px-6">
+          <div className="card p-8 max-w-md text-center animate-pop-in">
+            <div className="text-3xl mb-2">📴</div>
+            <p className="mb-4">The host left the game.</p>
+            <Link href="/" className="btn-primary">
+              Back home
+            </Link>
+          </div>
+        </main>
+      </>
     );
   }
 
   if (!me || !snapshot) {
     return (
-      <main className="min-h-screen grid place-items-center text-slate-400 animate-pulse">
-        Connecting…
-      </main>
+      <>
+        <Background themeId="aurora" />
+        <main className="min-h-screen grid place-items-center text-slate-300 animate-pulse text-lg">
+          Connecting…
+        </main>
+      </>
     );
   }
 
@@ -123,7 +130,9 @@ export default function PlayPage() {
   }
 
   return (
-    <main className="min-h-screen px-4 py-4 max-w-3xl mx-auto">
+    <>
+      <Background themeId={snapshot.quizTheme} imageUrl={snapshot.quizThemeImage} />
+      <main className="min-h-screen px-4 py-4 max-w-3xl mx-auto">
       <header className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <Avatar avatar={me.avatar} size="md" />
@@ -132,7 +141,7 @@ export default function PlayPage() {
             <div className="text-xs text-slate-400">PIN {me.pin}</div>
           </div>
         </div>
-        <div className="text-right">
+        <div className="card px-4 py-2 text-right">
           <div className="text-xs text-slate-400">Your score</div>
           <div className="text-2xl font-black tabular-nums">
             {myPlayer?.score ?? 0}
@@ -160,7 +169,7 @@ export default function PlayPage() {
             <div className="pill">
               Q{snapshot.questionIndex + 1} / {snapshot.totalQuestions}
             </div>
-            <Timer endsAt={snapshot.questionEndsAt} />
+            <Timer startsAt={snapshot.questionStartedAt} endsAt={snapshot.questionEndsAt} />
           </div>
           <h2 className="text-xl md:text-2xl font-bold mb-3">
             {snapshot.currentQuestion.prompt}
@@ -176,7 +185,7 @@ export default function PlayPage() {
 
           {feedback ? (
             <div
-              className={`card p-6 text-center ${
+              className={`card p-6 text-center animate-pop-in ${
                 feedback.correct ? "border-emerald-400/50" : "border-rose-400/50"
               }`}
             >
@@ -274,7 +283,8 @@ export default function PlayPage() {
       {snapshot.phase === "finished" && (
         <FinalForPlayer snapshot={snapshot} myNick={me.nickname} />
       )}
-    </main>
+      </main>
+    </>
   );
 }
 

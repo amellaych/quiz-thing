@@ -72,6 +72,8 @@ function snapshot(game, includeStats = false) {
     pin: game.pin,
     phase: game.phase,
     quizTitle: game.quiz.title,
+    quizTheme: game.quiz.theme,
+    quizThemeImage: game.quiz.themeImage,
     totalQuestions: game.quiz.questions.length,
     questionIndex: game.questionIndex,
     players: [...game.players.values()]

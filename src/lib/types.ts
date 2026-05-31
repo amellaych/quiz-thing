@@ -26,6 +26,10 @@ export interface Quiz {
   title: string;
   description?: string;
   coverImageUrl?: string;
+  /** Background theme id (see lib/themes.ts). */
+  theme?: string;
+  /** Optional custom background image URL (overlaid on the theme). */
+  themeImage?: string;
   questions: Question[];
   createdAt: number;
 }
@@ -64,6 +68,9 @@ export interface GameSnapshot {
   pin: string;
   phase: GamePhase;
   quizTitle: string;
+  /** Background theme id, propagated so players see the host's chosen theme. */
+  quizTheme?: string;
+  quizThemeImage?: string;
   totalQuestions: number;
   questionIndex: number;
   players: PublicPlayer[];

@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { Question, Quiz, QuestionType } from "@/lib/types";
 import { sampleQuiz } from "@/lib/sampleQuiz";
+import { Background } from "@/components/Background";
+import { BACKGROUND_THEMES, DEFAULT_THEME_ID } from "@/lib/themes";
 
 function uid() {
   return Math.random().toString(36).slice(2, 10);
@@ -32,6 +34,7 @@ export default function HostBuilderPage() {
     id: uid(),
     title: "",
     description: "",
+    theme: DEFAULT_THEME_ID,
     createdAt: Date.now(),
     questions: [blankQuestion()],
   }));
@@ -154,7 +157,9 @@ export default function HostBuilderPage() {
   }
 
   return (
-    <main className="min-h-screen px-4 md:px-8 py-6 max-w-7xl mx-auto">
+    <>
+      <Background themeId={quiz.theme} imageUrl={quiz.themeImage} />
+      <main className="min-h-screen px-4 md:px-8 py-6 max-w-7xl mx-auto">
       <header className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <Link href="/" className="flex items-center gap-2 text-slate-300 hover:text-white">
           ← Home
@@ -209,6 +214,58 @@ export default function HostBuilderPage() {
               className="mt-2 rounded-lg max-h-32 object-cover w-full"
             />
           )}
+        </div>
+      </section>
+
+      <section className="card p-5 mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <label className="label !mb-0">Background theme</label>
+          <span className="text-xs text-slate-400">
+            Players see this live during the game
+          </span>
+        </div>
+        <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
+          {BACKGROUND_THEMES.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => updateQuiz({ theme: t.id })}
+              title={t.name}
+              className={`relative aspect-[4/3] rounded-xl overflow-hidden border-2 transition ${
+                (quiz.theme || DEFAULT_THEME_ID) === t.id
+                  ? "border-white ring-2 ring-white/40 scale-[1.03]"
+                  : "border-white/10 hover:border-white/40"
+              }`}
+              style={{ background: t.swatch }}
+            >
+              <span className="absolute inset-x-0 bottom-0 bg-black/40 text-[10px] font-semibold py-0.5 text-center">
+                {t.name}
+              </span>
+            </button>
+          ))}
+        </div>
+        <div className="mt-4 grid md:grid-cols-2 gap-4 items-start">
+          <div>
+            <label className="label">Custom background image URL (optional)</label>
+            <input
+              className="input"
+              placeholder="https://…  (overlaid on the theme)"
+              value={quiz.themeImage || ""}
+              onChange={(e) => updateQuiz({ themeImage: e.target.value })}
+            />
+            {quiz.themeImage && (
+              <button
+                onClick={() => updateQuiz({ themeImage: "" })}
+                className="mt-2 text-xs text-slate-400 hover:text-rose-300"
+              >
+                Remove custom image
+              </button>
+            )}
+          </div>
+          <p className="text-xs text-slate-400 md:pt-6">
+            The background you see right now is exactly what your players will
+            see. Add an image to layer a photo over the chosen color theme.
+          </p>
         </div>
       </section>
 
@@ -410,5 +467,6 @@ export default function HostBuilderPage() {
         )}
       </div>
     </main>
+    </>
   );
 }

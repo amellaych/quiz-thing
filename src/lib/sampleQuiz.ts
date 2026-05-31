@@ -4,6 +4,7 @@ export const sampleQuiz: Quiz = {
   id: "sample-general-knowledge",
   title: "General Knowledge Warm-Up",
   description: "A quick 5-question demo quiz to try the platform out.",
+  theme: "ocean",
   createdAt: Date.now(),
   questions: [
     {

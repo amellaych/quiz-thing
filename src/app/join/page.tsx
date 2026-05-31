@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { AVATAR_COLORS, AVATAR_EMOJIS, type PlayerAvatar } from "@/lib/types";
 import { Avatar } from "@/components/Avatar";
+import { Background } from "@/components/Background";
 import { emitWithAck, getSocket } from "@/lib/socket";
 
 function JoinPageInner() {
@@ -61,13 +62,15 @@ function JoinPageInner() {
   }
 
   return (
-    <main className="min-h-screen px-4 py-8 max-w-md mx-auto">
+    <>
+      <Background themeId="grape" />
+      <main className="min-h-screen px-4 py-8 max-w-md mx-auto">
       <Link href="/" className="text-slate-300 hover:text-white text-sm">
         ← Home
       </Link>
 
       {step === "pin" && (
-        <form onSubmit={handleSubmitPin} className="card p-6 mt-6">
+        <form onSubmit={handleSubmitPin} className="card p-6 mt-6 shadow-glow animate-pop-in">
           <h1 className="text-3xl font-black text-center mb-1">Join a game</h1>
           <p className="text-slate-300 text-center mb-6">
             Ask the host for the 6-digit PIN
@@ -88,7 +91,7 @@ function JoinPageInner() {
       )}
 
       {step === "avatar" && (
-        <form onSubmit={handleJoin} className="card p-6 mt-6">
+        <form onSubmit={handleJoin} className="card p-6 mt-6 shadow-glow animate-pop-in">
           <h1 className="text-2xl font-bold mb-1">Make your character</h1>
           <p className="text-slate-300 text-sm mb-5">PIN: {pin}</p>
 
@@ -103,8 +106,8 @@ function JoinPageInner() {
                 key={e}
                 type="button"
                 onClick={() => setAvatar((a) => ({ ...a, emoji: e }))}
-                className={`aspect-square rounded-md text-2xl ${
-                  avatar.emoji === e ? "bg-white/20 ring-2 ring-white" : "hover:bg-white/10"
+                className={`aspect-square rounded-md text-2xl transition ${
+                  avatar.emoji === e ? "bg-white/20 ring-2 ring-white scale-110" : "hover:bg-white/10"
                 }`}
               >
                 {e}
@@ -119,8 +122,8 @@ function JoinPageInner() {
                 key={c}
                 type="button"
                 onClick={() => setAvatar((a) => ({ ...a, color: c }))}
-                className={`aspect-square rounded-full ${
-                  avatar.color === c ? "ring-2 ring-white" : ""
+                className={`aspect-square rounded-full transition ${
+                  avatar.color === c ? "ring-2 ring-white scale-110" : "hover:scale-105"
                 }`}
                 style={{ backgroundColor: c }}
               />
@@ -150,7 +153,8 @@ function JoinPageInner() {
           </button>
         </form>
       )}
-    </main>
+      </main>
+    </>
   );
 }
 
